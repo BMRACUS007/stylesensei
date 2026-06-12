@@ -211,7 +211,81 @@ def get_user_designs_route():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+@app.route("/generate_sketch_to_image", methods=["POST"])
+def generate_sketch_to_image():
+    try:
+        uploaded_sketch = request.files.get("sketch")
+        prompt = request.form.get("prompt", "").lower().strip()
 
+        if not uploaded_sketch or not prompt:
+            return jsonify({
+                "error": "Sketch and prompt required"
+            }), 400
+
+        # Detect color from prompt
+        colors = [
+            "red",
+            "blue",
+            "black",
+            "white",
+            "green",
+            "grey",
+            "pink",
+            "purple"
+        ]
+
+        detected_color = None
+
+        for color in colors:
+            if color in prompt:
+                detected_color = color
+                break
+
+        if not detected_color:
+            return jsonify({
+                "error": "Please specify a supported color"
+            }), 400
+
+        # Image file path
+        image_filename = f"{detected_color}.png"
+
+        image_path = os.path.join(
+            app.root_path,
+            "static",
+            "dresses",
+            "sketches",
+            image_filename
+        )
+
+        print("Image Path:", image_path)
+        print("Exists:", os.path.exists(image_path))
+
+        if not os.path.exists(image_path):
+            return jsonify({
+                "error": f"Image not found: {image_filename}"
+            }), 404
+
+        # Build URL
+        image_url = url_for(
+            "static",
+            filename=f"dresses/sketches/{image_filename}",
+            _external=True
+        )
+
+        print("Generated URL:", image_url)
+
+        return jsonify({
+            "success": True,
+            "image_url": image_url,
+            "color_detected": detected_color,
+            "sketch_used": image_filename
+        })
+
+    except Exception as e:
+        print("Sketch Generation Error:", str(e))
+        return jsonify({
+            "error": str(e)
+        }), 500
 
 # ==========================
 # MAIN
