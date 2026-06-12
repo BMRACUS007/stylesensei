@@ -362,8 +362,7 @@ const ABI = [
         "constant": true
       }
     ]
-   
-/* -----------------------------
+ /* -----------------------------
    Loading Messages
 ------------------------------ */
 const loadingMessages = [
@@ -377,7 +376,7 @@ const loadingMessages = [
 let loadingInterval = null;
 
 /* -----------------------------
-   Image Generation
+   IMAGE GENERATION
 ------------------------------ */
 async function generateImage() {
   const prompt = document.getElementById("prompt").value.trim();
@@ -393,29 +392,38 @@ async function generateImage() {
   startLoadingMessages();
 
   try {
-    // Generate image from backend
     const response = await fetch(`${BACKEND_URL}/generate_text_to_image`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ prompt })
     });
 
-    const data = await response.json();
+    const text = await response.text();
 
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (e) {
+      console.error("❌ Invalid JSON from backend:", text);
+      alert("Server error while generating image");
+      return;
+    }
+
+    if (!response.ok) {
+      alert(data.error || "Image generation failed");
+      return;
+    }
+
+    if (!data.image_url) {
+      alert("No image returned from server");
+      return;
+    }
+
+    // Show image
     img.src = data.image_url + "?" + Date.now();
     img.style.display = "block";
 
-    // Upload generated image to IPFS
-    const ipfsResponse = await fetch(`${BACKEND_URL}/upload_to_ipfs_from_url`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ image_url: data.image_url })
-    });
-
-    const ipfsData = await ipfsResponse.json();
-
-    lastGeneratedCid = ipfsData.cid;
-    lastGeneratedImageUrl = `http://127.0.0.1:8080/ipfs/${ipfsData.cid}`;
+    lastGeneratedImageUrl = data.image_url;
 
   } catch (error) {
     console.error("❌ Error:", error);
@@ -427,44 +435,75 @@ async function generateImage() {
 }
 
 /* -----------------------------
-   Save Design (PDF + Blockchain)
+   SAVE DESIGN (PDF + BLOCKCHAIN)
 ------------------------------ */
 async function handleSaveDesign() {
-  if (!lastGeneratedCid || !lastGeneratedImageUrl) {
+  if (!lastGeneratedImageUrl) {
     alert("No generated image to save");
     return;
   }
 
-  const response = await fetch(`${BACKEND_URL}/generate_pdf`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      cid: lastGeneratedCid,
-      wallet: CONFIG.WALLET_ADDRESS,
-      timestamp: Date.now(),
-      image_url: lastGeneratedImageUrl
-    })
-  });
+  try {
+    const response = await fetch(`${BACKEND_URL}/generate_pdf`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        image_url: lastGeneratedImageUrl,
+        timestamp: Date.now()
+      })
+    });
 
-  if (response.ok) {
+    if (!response.ok) {
+      const errText = await response.text();
+      console.error("PDF error:", errText);
+      alert("PDF generation failed");
+      return;
+    }
+
     const blob = await response.blob();
     const url = URL.createObjectURL(blob);
 
     const link = document.createElement("a");
     link.href = url;
-    link.download = "design_info.pdf";
+    link.download = "design_certificate.pdf";
     link.click();
 
     URL.revokeObjectURL(url);
 
-    await saveToBlockchain(lastGeneratedCid);
-  } else {
-    alert("PDF generation failed");
+    // Save to blockchain
+    await saveToBlockchain(lastGeneratedImageUrl);
+
+    alert("Design saved successfully");
+
+  } catch (error) {
+    console.error("Save error:", error);
+    alert("Failed to save design");
   }
 }
 
 /* -----------------------------
-   Loading Text Animation
+   BLOCKCHAIN SAVE
+------------------------------ */
+async function saveToBlockchain(imageUrl) {
+  try {
+    const provider = new ethers.providers.JsonRpcProvider(CONFIG.GANACHE_RPC_URL);
+    const wallet = new ethers.Wallet(CONFIG.GANACHE_PRIVATE_KEY, provider);
+
+    const contract = new ethers.Contract(contractAddress.trim(), ABI, wallet);
+
+    const tx = await contract.saveDesign(imageUrl);
+    await tx.wait();
+
+    console.log("✅ Saved on blockchain");
+
+  } catch (error) {
+    console.error("❌ Blockchain Error:", error);
+    alert("Blockchain transaction failed");
+  }
+}
+
+/* -----------------------------
+   LOADING TEXT
 ------------------------------ */
 function startLoadingMessages() {
   let index = 0;
@@ -484,38 +523,14 @@ function stopLoadingMessages() {
 }
 
 /* -----------------------------
-   Reset Prompt
+   RESET
 ------------------------------ */
 function resetPrompt() {
   document.getElementById("prompt").value = "";
   document.getElementById("generatedImage").style.display = "none";
+  lastGeneratedImageUrl = null;
 }
- async function saveToBlockchain(cid) {
-      try {
-        const provider = new ethers.providers.JsonRpcProvider(CONFIG.GANACHE_RPC_URL);
-        const wallet = new ethers.Wallet(CONFIG.GANACHE_PRIVATE_KEY, provider);
-
-        userAccount = wallet.address;
-
-        const contract = new ethers.Contract(contractAddress.trim(), ABI, wallet);
-        const existingDesigns = await contract.getDesigns(wallet.address);
-        const isDuplicate = existingDesigns.some(d => d.cid === cid);
-
-        if (isDuplicate) {
-          alert("⚠️ Design already saved");
-          return;
-        }
-
-        const tx = await contract.saveDesign(cid);
-        await tx.wait();
-
-        alert("✅ Design saved on blockchain\n" + wallet.address);
-      } catch (error) {
-        console.error("❌ Blockchain Error:", error);
-        alert("Blockchain transaction failed");
-      }
-    }
-  </script>
+</script>
 </body>
 
 </html>
