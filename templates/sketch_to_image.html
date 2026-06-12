@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Sketch To Image</title>
+  <!-- Ethers.js -->
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Favicons -->
+  <link href="{{ url_for('static', filename='img/favicon.png') }}" rel="icon">
+  <link href="{{ url_for('static', filename='img/apple-touch-icon.png') }}" rel="apple-touch-icon">
+
+  <!-- CSS Files -->
+  <link href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='vendor/aos/aos.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet">
+  <script src="{{ url_for('static', filename='js/config.js') }}"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg,
+          color-mix(in srgb, #0d83fd, transparent 95%) 50%,
+          color-mix(in srgb, #0d83fd, transparent 98%) 25%,
+          transparent 50%);
+    }
+  </style>
+</head>
+
+<body class="starter-page-page">
+
+<header id="header" class="header fixed-top bg-white shadow-sm">
+  <nav class="navbar navbar-expand-xl navbar-light container-xl">
+
+    <!-- Logo -->
+    <a class="navbar-brand d-flex align-items-center" href="#">
+      <img src="{{ url_for('static', filename='img/StyleSensei_Logo.png') }}"
+           alt="Logo" width="40" height="40">
+      <span class="ms-2 fw-bold">𝐒𝐭𝐲𝐥𝐞𝐒𝐞𝐧𝐬𝐞𝐢</span>
+    </a>
+
+    <!-- Mobile Toggle Button -->
+    <button class="navbar-toggler" type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#mainNavbar">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Menu -->
+    <div class="collapse navbar-collapse justify-content-center"
+         id="mainNavbar">
+
+      <ul class="navbar-nav mb-2 mb-xl-0 gap-xl-4 text-center">
+
+        <li class="nav-item">
+          <a class="nav-link active" href="/">Home</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="/#about">About</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="/#features">Features</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="/#footer">Contact</a>
+        </li>
+
+      </ul>
+      <button class="btn btn-outline-primary" onclick="handleSaveDesign()">Save Design</button>
+    </div>
+
+  </nav>
+</header>
+
+
+<main class="main d-flex flex-column align-items-center justify-content-center min-vh-100 py-5 mt-5 pt-5">
+
+    <div class="light-background">
+      <div class="container text-center">
+        <h1 class="mb-4">Sketch To Image Generation</h1>
+        <ol class="instructions text-start">
+          <li><strong>Upload Your Sketch</strong> – Select the hand-drawn or digital sketch you want to turn into a
+            realistic image.</li>
+          <li><strong>Describe the Details</strong> – In the text box, specify the style, colors, background, and other
+            features you want in the final image, then click <strong>Generate</strong>.</li>
+          <li><strong>Review & Refine</strong> – Check the generated image and adjust your description if needed.</li>
+          <li><strong>Secure & Own It</strong> – Connect your wallet to save the generated image on the blockchain.</li>
+        </ol>
+      </div>
+
+      <form id="sketch-form">
+        <div class="mb-3">
+          <label for="sketchInput" class="form-label">Upload Sketch</label>
+          <input type="file" class="form-control" id="sketchInput" accept="image/*" required>
+        </div>
+        <div class="mb-3">
+          <label for="promptInput" class="form-label">Describe your changes</label>
+          <input type="text" class="form-control" id="promptInput" placeholder="Enter your prompt here" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Generate</button>
+        <button type="button" class="btn btn-secondary" id="resetBtn">Reset</button>
+
+
+      </form>
+
+      <!-- Loading Section -->
+      <div id="loading" style="display: none; text-align: center;">
+        <img src="{{ url_for('static', filename='videos/fashion-designer.gif') }}" alt="Loading fashion design..."
+          style="max-width: 250px; height: auto;" />
+        <p id="loadingText" style="margin-top: 10px; color: #333; font-weight: 500;"></p>
+      </div>
+
+      <div id="imageContainer" class="mt-4 text-center d-none">
+        <h4>Generated Image:</h4>
+        <img id="generatedImage" class="img-fluid d-block mx-auto" alt="Generated Output">
+      </div>
+    </div>
+  </main>
+  <footer id="footer" class="footer">
+
+    <div class="container footer-top">
+      <div class="row gy-4">
+        <!-- Logo and Contact Info -->
+        <div class="col-lg-4 col-md-6 footer-about">
+          <a href="index.html" class="logo d-flex align-items-center">
+            <img src="{{ url_for('static', filename='img/StyleSensei_Logo.png') }}" alt="Favicon">
+            <span class="sitename">𝐒𝐭𝐲𝐥𝐞𝐒𝐞𝐧𝐬𝐞𝐢</span>
+          </a>
+          <div class="footer-contact pt-3">
+            <p class="mt-3"><strong>Phone:</strong> <span>+91 8987437899</span></p>
+            <p><strong>Email:</strong> <span>stylesensei@example.com</span></p>
+          </div>
+          <div class="social-links d-flex mt-4">
+            <a href=""><i class="bi bi-twitter-x"></i></a>
+            <a href=""><i class="bi bi-facebook"></i></a>
+            <a href=""><i class="bi bi-instagram"></i></a>
+            <a href=""><i class="bi bi-linkedin"></i></a>
+          </div>
+        </div>
+
+        <!-- Useful Links -->
+        <div class="col-lg-2 col-md-3 footer-links">
+          <h4>Useful Links</h4>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/#about">About us</a></li>
+            <li><a href="/#features">Features</a></li>
+       
+        
+          </ul>
+        </div>
+
+        <!-- Our Services -->
+        <div class="col-lg-2 col-md-3 footer-links">
+          <h4>Our Services</h4>
+          <ul>
+            <li><a href="/text_to_image">Text-to-Image</a></li>
+            <li><a href="/image_to_image">Image-to-Image</a></li>
+            <li><a href="/sketch_to_image">Sketch-to-Image</a></li>
+            <li><a href="https://stylebot-889ba8.zapier.app">Chatbot Support</a></li>
+          </ul>
+        </div>
+
+        <!-- Newsletter -->
+        <div class="col-lg-4 col-md-12 footer-newsletter">
+          <h4>Join Our Newsletter</h4>
+          <p>Stay updated with the latest in AI fashion tech and exclusive design tools!</p>
+          <form action="#" method="post" class="d-flex">
+            <input type="email" name="email" placeholder="Enter your email" class="form-control me-2" required>
+            <button type="submit" class="btn btn-primary">Subscribe</button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="container copyright text-center mt-4">
+      <p>© <span>Copyright</span> <strong class="px-1 sitename">𝐒𝐭𝐲𝐥𝐞𝐒𝐞𝐧𝐬𝐞𝐢</strong> <span>All Rights
+          Reserved</span></p>
+      <div class="credits">
+        Designed by <a href="https://bootstrapmade.com/">Sanika Kulkarni</a>
+      </div>
+    </div>
+
+  </footer>
+
+<script>
+  
+
+
+
+    // ---------------------------
+    // Global Variables
+    // ---------------------------
+ 
+
+const BACKEND_URL = window.location.origin;
+    let lastGeneratedCid = null;
+    let lastGeneratedImageUrl = null;
+    let userAccount = null;
+
+    const contractAddress = CONFIG.CONTRACT_ADDRESS;
+    const ABI = [
+      {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": true,
+            "internalType": "address",
+            "name": "user",
+            "type": "address"
+          },
+          {
+            "indexed": false,
+            "internalType": "string",
+            "name": "cid",
+            "type": "string"
+          },
+          {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "timestamp",
+            "type": "uint256"
+          }
+        ],
+        "name": "DesignRecorded",
+        "type": "event"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
+        ],
+        "name": "designs",
+        "outputs": [
+          {
+            "internalType": "string",
+            "name": "cid",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "timestamp",
+            "type": "uint256"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function",
+        "constant": true
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "string",
+            "name": "cid",
+            "type": "string"
+          }
+        ],
+        "name": "saveDesign",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "user",
+            "type": "address"
+          }
+        ],
+        "name": "getDesigns",
+        "outputs": [
+          {
+            "components": [
+              {
+                "internalType": "string",
+                "name": "cid",
+                "type": "string"
+              },
+              {
+                "internalType": "uint256",
+                "name": "timestamp",
+                "type": "uint256"
+              }
+            ],
+            "internalType": "struct DesignStorage.Design[]",
+            "name": "",
+            "type": "tuple[]"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function",
+        "constant": true
+      }
+    ]
+
+    const loadingMessages = [
+      "Sketching your design...",
+      "Adding colors...",
+      "Styling your outfit...",
+      "Applying finishing touches...",
+      "Finalizing your fashion concept..."
+    ];
+
+    let loadingInterval = null;
+
+    function startLoadingMessages() {
+      let index = 0;
+      const textElement = document.getElementById("loadingText");
+      textElement.innerText = loadingMessages[index];
+
+      loadingInterval = setInterval(() => {
+        index = (index + 1) % loadingMessages.length;
+        textElement.innerText = loadingMessages[index];
+      }, 2000);
+    }
+
+    function stopLoadingMessages() {
+      clearInterval(loadingInterval);
+      document.getElementById("loadingText").innerText = "";
+    }
+
+    // ---------------------------
+    // Image Generation
+    // ---------------------------
+    document.getElementById("sketch-form").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const sketchInput = document.getElementById("sketchInput").files[0];
+      const promptInput = document.getElementById("promptInput").value.trim();
+
+      if (!sketchInput || !promptInput) {
+        alert("Please upload a sketch and enter a prompt.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("sketch", sketchInput);
+      formData.append("prompt", promptInput);
+
+      const loading = document.getElementById("loading");
+      const imgElement = document.getElementById("generatedImage");
+
+      loading.style.display = "block";
+      startLoadingMessages();
+      imgElement.style.display = "none";
+
+      try {
+        // -------------------------------
+        // STEP 1: Generate Image
+        // -------------------------------
+        const response = await fetch(`${BACKEND_URL}/generate_sketch_to_image`, {
+          method: "POST",
+          body: formData
+        });
+
+        if (!response.ok) throw new Error(`Generation failed: ${response.status}`);
+
+        const data = await response.json();
+        if (!data.image_url) throw new Error("Image URL missing from backend");
+
+        console.log("✅ Generated Image:", data.image_url);
+
+        // -------------------------------
+        // STEP 2: Upload to IPFS
+        // -------------------------------
+        const ipfsRes = await fetch(`${BACKEND_URL}/upload_to_ipfs_from_url`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ image_url: data.image_url })
+        });
+
+        const ipfsData = await ipfsRes.json();
+        if (!ipfsData.cid) throw new Error("IPFS upload failed");
+
+        // -------------------------------
+        // STEP 3: Save IPFS data
+        // -------------------------------
+        lastGeneratedCid = ipfsData.cid;
+
+        // Use relative URL to avoid CORS issues
+        lastGeneratedImageUrl = data.image_url;
+
+        // Ensure container shows only after image loads
+        imgElement.onload = () => {
+          document.getElementById("imageContainer").classList.remove("d-none");
+          imgElement.style.display = "block";
+        };
+        imgElement.onerror = () => {
+          if (!lastGeneratedImageUrl) return; // ignore reset-triggered errors
+          console.error("❌ Failed to load image:", lastGeneratedImageUrl);
+        };
+
+        imgElement.src = lastGeneratedImageUrl;
+
+      } catch (error) {
+        console.error("❌ Sketch-to-Image Error:", error);
+        alert("Failed to generate or upload image.");
+      } finally {
+        loading.style.display = "none";
+        stopLoadingMessages();
+      }
+    });
+
+    // ---------------------------
+    // Save Design PDF
+    // ---------------------------
+    async function handleSaveDesign() {
+      if (!lastGeneratedImageUrl) {
+        alert("❌ Generate an image first.");
+        return;
+      }
+
+      if (!lastGeneratedCid) {
+        alert("❌ CID missing.");
+        return;
+      }
+
+      const timestamp = Date.now();
+
+      try {
+        const response = await fetch(`${BACKEND_URL}/generate_pdf`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            cid: lastGeneratedCid,
+            wallet: CONFIG.WALLET_ADDRESS,
+            timestamp,
+            image_url: lastGeneratedImageUrl
+          })
+        });
+
+        if (response.ok) {
+          const blob = await response.blob();
+          const url = URL.createObjectURL(blob);
+
+          const link = document.createElement("a");
+          link.href = url;
+          link.download = "design_info.pdf";
+          link.click();
+          URL.revokeObjectURL(url);
+
+          await saveToBlockchain(lastGeneratedCid);
+        } else {
+          const err = await response.json();
+          alert("❌ PDF generation failed: " + (err.error || "Unknown error"));
+        }
+      } catch (err) {
+        console.error("❌ PDF generation error:", err);
+        alert("PDF generation failed.");
+      }
+    }
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      // Reset form fields
+      document.getElementById("sketch-form").reset();
+
+      // Hide image container
+      const imageContainer = document.getElementById("imageContainer");
+      imageContainer.classList.add("d-none");
+
+      // Reset image safely
+      const imgElement = document.getElementById("generatedImage");
+      imgElement.src = "";
+      imgElement.style.display = "none";
+      imgElement.onload = null;
+      imgElement.onerror = null;
+
+      // Stop loader
+      stopLoadingMessages();
+      document.getElementById("loading").style.display = "none";
+
+      // Reset stored values
+      lastGeneratedCid = null;
+      lastGeneratedImageUrl = null;
+
+      console.log("🔄 Reset completed cleanly");
+    });
+
+    // ---------------------------
+    // Blockchain Interaction
+    // ---------------------------
+    async function saveToBlockchain(cid) {
+      try {
+        const provider = new ethers.providers.JsonRpcProvider(CONFIG.GANACHE_RPC_URL);
+        const wallet = new ethers.Wallet(CONFIG.GANACHE_PRIVATE_KEY, provider);
+
+        userAccount = wallet.address;
+
+        const contract = new ethers.Contract(contractAddress.trim(), ABI, wallet);
+        const existingDesigns = await contract.getDesigns(wallet.address);
+        const isDuplicate = existingDesigns.some(d => d.cid === cid);
+
+        if (isDuplicate) {
+          alert("⚠️ Design already saved");
+          return;
+        }
+
+        const tx = await contract.saveDesign(cid);
+        await tx.wait();
+
+        alert("✅ Design saved on blockchain\n" + wallet.address);
+      } catch (error) {
+        console.error("❌ Blockchain Error:", error);
+        alert("Blockchain transaction failed");
+      }
+    }
+
+
+  </script>
+
+
+  <!-- Vendor JS Files -->
+ 
+  <script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendor/aos/aos.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendor/glightbox/js/glightbox.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendor/swiper/swiper-bundle.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendor/purecounter/purecounter_vanilla.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+
+</html>

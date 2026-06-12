@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>𝐒𝐭𝐲𝐥𝐞𝐒𝐞𝐧𝐬𝐞𝐢</title>
+
+  <!-- ✅ Favicons -->
+  <link href="{{ url_for('static', filename='img/StyleSensei_Logo.png') }}" rel="icon">
+  <link href="{{ url_for('static', filename='img/apple-touch-icon.png') }}" rel="apple-touch-icon">
+
+  <!-- ✅ Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap"
+    rel="stylesheet">
+
+  <!-- ✅ Updated CSS File Paths -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendor/bootstrap-icons/bootstrap-icons.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendor/aos/aos.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendor/glightbox/css/glightbox.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendor/swiper/swiper-bundle.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+
+  <!-- Bootstrap JS -->
+  <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+</head>
+
+<body class="index-page">
+
+<header id="header" class="header fixed-top bg-white shadow-sm">
+  <nav class="navbar navbar-expand-xl navbar-light container-xl">
+
+    <!-- Logo -->
+    <a class="navbar-brand d-flex align-items-center" href="#">
+      <img src="{{ url_for('static', filename='img/StyleSensei_Logo.png') }}"
+           alt="Logo" width="40" height="40">
+      <span class="ms-2 fw-bold">𝐒𝐭𝐲𝐥𝐞𝐒𝐞𝐧𝐬𝐞𝐢</span>
+    </a>
+
+    <!-- Mobile Toggle Button -->
+    <button class="navbar-toggler" type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#mainNavbar">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Menu -->
+    <div class="collapse navbar-collapse justify-content-center"
+         id="mainNavbar">
+
+      <ul class="navbar-nav mb-2 mb-xl-0 gap-xl-4 text-center">
+
+        <li class="nav-item">
+          <a class="nav-link active" href="/">Home</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="#about">About</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="#features">Features</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="#footer">Contact</a>
+        </li>
+
+      </ul>
+    </div>
+
+  </nav>
+</header>
+
+
+
+  <main class="main">
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero section">
+
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+        <div class="row align-items-center">
+          <div class="col-lg-6">
+            <div class="hero-content" data-aos="fade-up" data-aos-delay="200">
+              <div class="company-badge mb-4">
+                <i class="bi bi-stars"></i>
+                Personalized Fashion. Infinite Creativity.
+              </div>
+
+              <h1 class="mb-6">
+                Create & Innovate<br>
+
+              </h1>
+
+              <p class="mb-4 mb-md-5" style="text-align: justify;">
+                Step into the future of fashion design with StyleSensei. Our platform leverages powerful AI to bring
+                your ideas to life from multimodal prompts, while blockchain technology guarantees your creative rights.
+                Fast, flexible, and secure — the ultimate tool for modern designers.
+
+
+          
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="hero-image" data-aos="zoom-out" data-aos-delay="300">
+              <!-- ✅ Corrected Hero Image Path -->
+              <img src="{{ url_for('static', filename='img/illustration-1.webp') }}" alt="Hero Image" class="img-fluid">
+
+              <div class="customers-badge">
+                <div class="customer-avatars">
+                  <!-- ✅ Corrected Avatar Image Paths -->
+                  <img src="{{ url_for('static', filename='img/avatar-1.webp') }}" alt="Customer 1" class="avatar">
+                  <img src="{{ url_for('static', filename='img/avatar-2.webp') }}" alt="Customer 2" class="avatar">
+                  <img src="{{ url_for('static', filename='img/avatar-3.webp') }}" alt="Customer 3" class="avatar">
+                  <img src="{{ url_for('static', filename='img/avatar-4.webp') }}" alt="Customer 4" class="avatar">
+                  <img src="{{ url_for('static', filename='img/avatar-5.webp') }}" alt="Customer 5" class="avatar">
+                  <span class="avatar more">12+</span>
+                </div>
+                <p class="mb-0 mt-2">5 Tools in 1 Platform – Generate, Edit, Recommend, Chat, Own.</p>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="row stats-row gy-4 mt-5" data-aos="fade-up" data-aos-delay="500">
+            <div class="col-lg-3 col-md-6">
+              <div class="stat-item">
+                <div class="stat-icon">
+                  <i class="bi bi-magic"></i>
+                </div>
+                <div class="stat-content">
+                  <h4>Creative AI</h4>
+                  <p class="mb-0">Unique designs every time, no repeats.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+              <div class="stat-item">
+                <div class="stat-icon">
+                  <i class="bi bi-lock"></i>
+                </div>
+                <div class="stat-content">
+                  <h4>Style Claim</h4>
+                  <p class="mb-0">Blockchain-secured, tamper-proof originality.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+              <div class="stat-item">
+                <div class="stat-icon">
+                  <i class="bi bi-graph-up"></i>
+                </div>
+                <div class="stat-content">
+                  <h4>Rapid Workflow</h4>
+                  <p class="mb-0">Design faster,create better.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+              <div class="stat-item">
+                <div class="stat-icon">
+                  <i class="bi bi-chat-dots"></i>
+                </div>
+                <div class="stat-content">
+                  <h4>Style Bot</h4>
+                  <p class="mb-0">24/7 style help & trend insights.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+    </section><!-- /Hero Section -->
+
+    <!-- About Section -->
+    <section id="about" class="about section">
+
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+        <div class="row gy-4 align-items-center justify-content-between">
+
+          <div class="col-xl-5" data-aos="fade-up" data-aos-delay="200">
+            <span class="about-meta">MORE ABOUT US</span>
+            <h2 class="about-title">Empowering Fashion Designers Everywhere</h2>
+            <p class="about-description">
+              StyleSensei combines AI and blockchain to create unique fashion designs that belong to you securely.
+              Generate, customize, and claim your original styles with ease and confidence.
+            </p>
+
+            <div class="row feature-list-wrapper">
+              <div class="col-md-6">
+                <ul class="feature-list">
+                  <li><i class="bi bi-check-circle-fill"></i> Text to Image Generation.</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Image to Image Generation.</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Sketch to Image Generation.</li>
+                </ul>
+              </div>
+              <div class="col-md-6">
+                <ul class="feature-list">
+                  <li><i class="bi bi-check-circle-fill"></i> Outfit Recommendation.</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Style Bot.</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Design Ownership.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="info-wrapper">
+              <div class="row gy-4">
+                <div class="col-lg-5">
+                  <div class="profile d-flex align-items-center gap-3">
+                    <!-- Chatbot Icon instead of profile image -->
+                    <i class="bi bi-robot" style="font-size: 2.5rem; color: #333;"></i>
+                    <div>
+                      <h4 class="profile-name">Chat Support</h4>
+                      <p class="profile-position">Style Bot</p>
+                    </div>
+                  </div>
+
+                </div>
+                <div class="col-lg-7">
+                  <div class="contact-info d-flex align-items-center gap-2">
+                    <i class="bi bi-telephone-fill"></i>
+                    <div>
+                      <p class="contact-label">Call us anytime</p>
+                      <p class="contact-number">+91 8987437899 </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-xl-6" data-aos="fade-up" data-aos-delay="300">
+            <div class="image-wrapper">
+              <div class="images position-relative" data-aos="zoom-out" data-aos-delay="400">
+                <!-- ✅ Corrected Business Meeting Image -->
+                <img src="{{ url_for('static', filename='img/about-5.webp') }}" alt="Business Meeting"
+                  class="img-fluid main-image rounded-4">
+
+                <!-- ✅ Corrected Team Discussion Image -->
+                <img src="{{ url_for('static', filename='img/about-2.webp') }}" alt="Team Discussion"
+                  class="img-fluid small-image rounded-4">
+              </div>
+              <div class="experience-badge floating">
+                <h3>10x<span>Faster Designing</span></h3>
+                <p> AI speeds up the creative process.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </section><!-- /About Section -->
+
+    <!-- Features Section -->
+    <section id="features" class="features section">
+
+      <!-- Section Title -->
+      <div class="container section-title" data-aos="fade-up">
+        <h2>Features</h2>
+        <p>“Unlock Creativity. Customize Instantly. Design Securely.”</p>
+      </div><!-- End Section Title -->
+
+      <div class="container">
+
+        <div class="d-flex justify-content-center">
+
+          <ul class="nav nav-tabs" data-aos="fade-up" data-aos-delay="100">
+
+            <li class="nav-item">
+              <a class="nav-link active show" data-bs-toggle="tab" data-bs-target="#features-tab-1">
+                <h4>Text To Image</h4>
+              </a>
+            </li><!-- End tab nav item -->
+
+            <li class="nav-item">
+              <a class="nav-link" data-bs-toggle="tab" data-bs-target="#features-tab-2">
+                <h4>Image To Image</h4>
+              </a><!-- End tab nav item -->
+
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-bs-toggle="tab" data-bs-target="#features-tab-3">
+                <h4>Sketch To Image</h4>
+              </a>
+            </li><!-- End tab nav item -->
+
+
+          </ul>
+
+        </div>
+
+        <div class="tab-content" data-aos="fade-up" data-aos-delay="200">
+
+          <div class="tab-pane fade active show" id="features-tab-1">
+            <div class="row">
+              <div class="col-lg-6 order-2 order-lg-1 mt-3 mt-lg-0 d-flex flex-column justify-content-center">
+                <h3>Text To Image</h3>
+                <p class="fst-italic">
+                  Turn your fashion ideas into stunning AI-generated outfit images instantly!
+                </p>
+                <a href="/text_to_image" class="btn btn-primary">Explore</a>
+                <ul>
+                  <li><i class="bi bi-check2-all"></i> <span>Enter a detailed fashion description in the input
+                      box.</span></li>
+                  <li><i class="bi bi-check2-all"></i> <span>Click ‘Generate’ to create unique outfit images with
+                      AI.</span></li>
+                  <li><i class="bi bi-check2-all"></i> <span>Review the results and download or save your favorite
+                      designs securely.</span></li>
+                </ul>
+
+              </div>
+              <div class="col-lg-6 order-1 order-lg-2 text-center">
+                <img src="{{ url_for('static', filename='img/features-illustration-1.webp') }}" alt=""
+                  class="img-fluid">
+              </div>
+            </div>
+          </div><!-- End tab content item -->
+
+          <div class="tab-pane fade" id="features-tab-2">
+            <div class="row">
+              <div class="col-lg-6 order-2 order-lg-1 mt-3 mt-lg-0 d-flex flex-column justify-content-center">
+                <h3>Image To Image</h3>
+                <p class="fst-italic">
+                  Transform your existing outfit photos by adding personalized style changes using simple text
+                  instructions.
+                </p>
+                <a href="/image_to_image" class="btn btn-primary">Explore</a>
+                <ul>
+                  <li><i class="bi bi-check2-all"></i> <span>Upload an outfit image you want to modify.</span></li>
+                  <li><i class="bi bi-check2-all"></i> <span>Enter your desired changes or style descriptions.</span>
+                  </li>
+                  <li><i class="bi bi-check2-all"></i> <span>Click ‘Generate’ to see AI-enhanced transformations.</span>
+                  </li>
+                  <li><i class="bi bi-check2-all"></i> <span>Download or save the updated designs to your
+                      profile.</span></li>
+                </ul>
+              </div>
+
+              <div class="col-lg-6 order-1 order-lg-2 text-center">
+                <img src="{{ url_for('static', filename='img/features-illustration-2.webp') }}" alt=""
+                  class="img-fluid">
+              </div>
+            </div>
+          </div><!-- End tab content item -->
+
+          <div class="tab-pane fade" id="features-tab-3">
+            <div class="row">
+              <div class="col-lg-6 order-2 order-lg-1 mt-3 mt-lg-0 d-flex flex-column justify-content-center">
+                <h3>Sketch To Image</h3>
+                <p class="fst-italic">
+                  Convert your hand-drawn fashion sketches into realistic, AI-generated outfit images effortlessly.
+                </p>
+                <a href="/sketch_to_image" class="btn btn-primary">Explore</a>
+                <ul>
+                  <li><i class="bi bi-check2-all"></i> <span>Upload a clear hand-drawn fashion sketch.</span></li>
+                  <li><i class="bi bi-check2-all"></i> <span>Optionally add style or color preferences.</span></li>
+                  <li><i class="bi bi-check2-all"></i> <span>Generate realistic outfit visuals from your sketch.</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="col-lg-6 order-1 order-lg-2 text-center">
+                <img src="{{ url_for('static', filename='img/features-illustration-3.webp') }}" alt=""
+                  class="img-fluid">
+              </div>
+            </div>
+          </div><!-- End tab content item for sketch-->
+
+
+          <div class="tab-pane fade" id="features-tab-4">
+            <div class="row">
+              <div class="col-lg-6 order-2 order-lg-1 mt-3 mt-lg-0 d-flex flex-column justify-content-center">
+                <h3>Outfit Recommendation</h3>
+                 <p class="fst-italic">
+                  Discover curated fashion picks tailored just for you, combining style and comfort effortlessly.
+                </p>
+                 
+                <ul>
+                  <li><i class="bi bi-check2-all"></i> <span>Select your style preferences</span></li>
+                  <li><i class="bi bi-check2-all"></i> <span>Receive personalized outfit suggestions instantly.</span>
+                  </li>
+                  <li><i class="bi bi-check2-all"></i> <span>Mix and match designs to find your perfect look.</span>
+                  </li>
+                </ul>
+              </div>
+              <div class="col-lg-6 order-1 order-lg-2 text-center">
+                <img src="{{ url_for('static', filename='img/features-illustration-4.jpg') }}" alt="" class="img-fluid">
+              </div>
+            </div>
+          </div><!-- End tab content item for outfit recommendation -->
+
+
+    </section><!-- /Features Section -->
+
+    <!-- Features Cards Section -->
+    <section id="features-cards" class="features-cards section">
+
+      <div class="container">
+
+        <div class="row gy-4">
+
+          <div class="col-xl-3 col-md-6" data-aos="zoom-in" data-aos-delay="100">
+            <div class="feature-box orange">
+              <i class="bi bi-award"></i>
+              <h4>Multi-Modal Design </h4>
+              <h6>Sketch it. Describe it. Upload it.</h6>
+              <p style="text-align: justify;">
+                StyleSensei transforms your ideas into stunning fashion designs from text, images, or sketches offering
+                unmatched creative freedom.
+              </p>
+
+            </div>
+          </div><!-- End Feature Borx-->
+          <div class="col-xl-3 col-md-6" data-aos="zoom-in" data-aos-delay="100">
+            <div class="feature-box blue">
+              <i class="bi bi-award"></i>
+              <h4>Unique AI Designs</h4>
+              <h6>No Repeats. Only Originals.</h6>
+              <p style="text-align: justify;">
+                Say goodbye to repetitive AI designs. Powered by Stable Diffusion, StyleSensei generates diverse outfits
+                every single time.
+              </p>
+
+            </div>
+          </div><!-- End Feature Borx-->
+          <div class="col-xl-3 col-md-6" data-aos="zoom-in" data-aos-delay="100">
+            <div class="feature-box green">
+              <i class="bi bi-award"></i>
+              <h4>AI Style Assistant</h4>
+              <h6>Your 24/7 Fashion Consultant.</h6>
+              <p style="text-align: justify;">
+                Ask for styling tips, fashion trends, or design inspiration through our intelligent AI-powered
+                chatbot—always ready to assist you.
+              </p>
+
+            </div>
+          </div><!-- End Feature Borx-->
+          <div class="col-xl-3 col-md-6" data-aos="zoom-in" data-aos-delay="100">
+            <div class="feature-box orange">
+              <i class="bi bi-award"></i>
+              <h4>Blockchain Ownership </h4>
+              <h6>Protect What You Create.</h6>
+              <p style="text-align: justify;">
+                StyleSensei ensures your fashion creations are securely linked to your wallet address via blockchain.
+              </p>
+
+            </div>
+          </div><!-- End Feature Borx-->
+        </div>
+      </div>
+    </section><!-- /Features Cards Section -->
+
+    <!-- Stats Section -->
+    <section id="stats" class="stats section">
+
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+        <div class="row gy-4">
+
+          <div class="col-lg-3 col-md-6">
+            <div class="stats-item text-center w-100 h-100">
+              <span data-purecounter-start="0" data-purecounter-end="3" data-purecounter-duration="1"
+                class="purecounter"></span>
+              <p>Multimodal Input Types Supported</p>
+            </div>
+          </div><!-- End Stats Item -->
+
+          <div class="col-lg-3 col-md-6">
+            <div class="stats-item text-center w-100 h-100">
+              <span> 100 + </span>
+              <p>Fashion Styles Supported</p>
+            </div>
+          </div><!-- End Stats Item -->
+
+
+
+          <div class="col-lg-3 col-md-6">
+            <div class="stats-item text-center w-100 h-100">
+              <span> 24 / 7</span>
+              <p>Hours Of Support</p>
+            </div>
+          </div><!-- End Stats Item -->
+
+          <div class="col-lg-3 col-md-6">
+            <div class="stats-item text-center w-100 h-100">
+              <span> 3 </span>
+              <p>Avg Design Generation (seconds)</p>
+            </div>
+          </div><!-- End Stats Item -->
+
+        </div>
+
+      </div>
+
+    </section><!-- /Stats Section -->
+
+  </main>
+
+  <footer id="footer" class="footer">
+
+    <div class="container footer-top">
+      <div class="row gy-4">
+        <!-- Logo and Contact Info -->
+        <div class="col-lg-4 col-md-6 footer-about">
+          <a href="index.html" class="logo d-flex align-items-center">
+            <img src="{{ url_for('static', filename='img/StyleSensei_Logo.png') }}" alt="Favicon">
+            <span class="sitename">𝐒𝐭𝐲𝐥𝐞𝐒𝐞𝐧𝐬𝐞𝐢</span>
+          </a>
+          <div class="footer-contact pt-3">
+            <p class="mt-3"><strong>Phone:</strong> <span>+91 8987437899</span></p>
+            <p><strong>Email:</strong> <span>stylesensei@example.com</span></p>
+          </div>
+          <div class="social-links d-flex mt-4">
+            <a href=""><i class="bi bi-twitter-x"></i></a>
+            <a href=""><i class="bi bi-facebook"></i></a>
+            <a href=""><i class="bi bi-instagram"></i></a>
+            <a href=""><i class="bi bi-linkedin"></i></a>
+          </div>
+        </div>
+
+        <!-- Useful Links -->
+        <div class="col-lg-2 col-md-3 footer-links">
+          <h4>Useful Links</h4>
+          <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#about">About us</a></li>
+            <li><a href="#features">Features</a></li>
+          
+        
+          </ul>
+        </div>
+
+        <!-- Our Services -->
+        <div class="col-lg-2 col-md-3 footer-links">
+          <h4>Our Services</h4>
+          <ul>
+            <li><a href="/text_to_image">Text-to-Image</a></li>
+            <li><a href="/image_to_image">Image-to-Image</a></li>
+            <li><a href="/sketch_to_image">Sketch-to-Image</a></li>
+            <li><a href="https://stylebot-889ba8.zapier.app">Chatbot Support</a></li>
+          </ul>
+        </div>
+
+        <!-- Newsletter -->
+        <div class="col-lg-4 col-md-12 footer-newsletter">
+          <h4>Join Our Newsletter</h4>
+          <p>Stay updated with the latest in AI fashion tech and exclusive design tools!</p>
+          <form action="#" method="post" class="d-flex">
+            <input type="email" name="email" placeholder="Enter your email" class="form-control me-2" required>
+            <button type="submit" class="btn btn-primary">Subscribe</button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="container copyright text-center mt-4">
+      <p>© <span>Copyright</span> <strong class="px-1 sitename">𝐒𝐭𝐲𝐥𝐞𝐒𝐞𝐧𝐬𝐞𝐢</strong> <span>All Rights
+          Reserved</span></p>
+      <div class="credits">
+        Designed by <a href="https://bootstrapmade.com/">Sanika Kulkarni</a>
+      </div>
+    </div>
+
+  </footer>
+
+
+  <!-- Scroll Top -->
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i
+      class="bi bi-arrow-up-short"></i></a>
+  <!-- ✅ Vendor JS Files -->
+  <script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendor/php-email-form/validate.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendor/aos/aos.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendor/glightbox/js/glightbox.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendor/swiper/swiper-bundle.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendor/purecounter/purecounter_vanilla.js') }}"></script>
+
+  <!-- ✅ Main JS File -->
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <!-- ✅ Updated JS File Paths -->
+  <script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendor/php-email-form/validate.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendor/aos/aos.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendor/glightbox/js/glightbox.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendor/swiper/swiper-bundle.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendor/purecounter/purecounter_vanilla.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <script>
+   
+
+    
+  </script>
+
+</body>
+
+</html>
