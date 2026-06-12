@@ -1,44 +1,39 @@
 from flask import Blueprint, request, url_for, jsonify
 import os
 import random
-from PIL import Image
-import os
-import uuid
+
 image_generation_bp = Blueprint("image_generation", __name__)
 
 # ==========================
-# LOCAL IMAGE CONFIG
+# CONFIG
 # ==========================
 
-generated_images_folder = "static/generated_images"
 dress_folder = os.path.join("static", "dresses")
 
-os.makedirs(generated_images_folder, exist_ok=True)
-
-# Supported colors
 colors = ["red", "blue", "black", "white", "green", "yellow", "pink"]
 
+pattern_map = {
+    "flowers": "flowers",
+    "floral": "flowers",
+    "glitter": "glitter",
+    "sparkle": "glitter",
+    "embroidery": "embroidery",
+    "lace": "lace"
+}
 
 # ==========================
-# TEXT → IMAGE (LOCAL FALLBACK SYSTEM)
+# TEXT → IMAGE (FOLDER PICKER)
 # ==========================
 
 @image_generation_bp.route("/generate_text_to_image", methods=["POST"])
 def generate_text_to_image():
     try:
         data = request.get_json()
-
-        if not data:
-            return jsonify({"error": "Invalid request"}), 400
-
         prompt = data.get("prompt", "").lower().strip()
 
         if not prompt:
             return jsonify({"error": "Prompt required"}), 400
 
-        # -------------------------
-        # 1. Detect color
-        # -------------------------
         detected_color = None
         for color in colors:
             if color in prompt:
@@ -46,17 +41,12 @@ def generate_text_to_image():
                 break
 
         if not detected_color:
-            return jsonify({
-                "error": "No color detected. Try: red dress, blue dress, etc."
-            }), 400
+            return jsonify({"error": "Network Error"}), 400
 
-        # -------------------------
-        # 2. Get folder
-        # -------------------------
         folder_path = os.path.join(dress_folder, detected_color)
 
         if not os.path.exists(folder_path):
-            return jsonify({"error": f"No folder for {detected_color}"}), 404
+            return jsonify({"error": "Network Error"}), 404
 
         images = [
             f for f in os.listdir(folder_path)
@@ -64,98 +54,68 @@ def generate_text_to_image():
         ]
 
         if not images:
-            return jsonify({"error": f"No images in {detected_color} folder"}), 404
+            return jsonify({"error": "Network Error"}), 404
 
-        # -------------------------
-        # 3. Random selection
-        # -------------------------
-        selected_image = random.choice(images)
-
-        image_url = url_for(
-            "static",
-            filename=f"dresses/{detected_color}/{selected_image}",
-            _external=True
-        )
+        selected = random.choice(images)
 
         return jsonify({
-            "image_url": image_url,
-            "mode": "local_template",
-            "color_detected": detected_color
+            "image_url": url_for(
+                "static",
+                filename=f"dresses/{detected_color}/{selected}",
+                _external=True
+            ),
+            "mode": "local_color_random"
         })
 
     except Exception as e:
-        print("Text-to-Image Error:", e)
         return jsonify({"error": str(e)}), 500
 
 
 # ==========================
-# IMAGE → IMAGE (OPTIONAL PLACEHOLDER)
+# IMAGE → IMAGE (PATTERN PICKER)
 # ==========================
+
 @image_generation_bp.route("/generate_image_to_image", methods=["POST"])
 def generate_image_to_image():
     try:
         uploaded_image = request.files.get("image")
-        prompt = request.form.get("prompt", "").lower()
+        prompt = request.form.get("prompt", "").lower().strip()
 
         if not uploaded_image or not prompt:
             return jsonify({"error": "Image and prompt required"}), 400
 
-        # -----------------------------
-        # Load base image
-        # -----------------------------
-        base_image = Image.open(uploaded_image).convert("RGBA")
+        detected_pattern = None
 
-        # -----------------------------
-        # Keyword → overlay mapping
-        # -----------------------------
-        overlay_map = {
-            "red flowers": "red_flowers.png",
-            "flowers": "red_flowers.png",
-            "lace": "lace.png",
-            "glitter": "glitter.png",
-            "sparkle": "glitter.png",
-            "embroidery": "embroidery.png"
-        }
+        for key, folder in pattern_map.items():
+            if key in prompt:
+                detected_pattern = folder
+                break
 
-        overlays_to_apply = []
+        if not detected_pattern:
+            return jsonify({"error": "Network Error"}), 400
 
-        # -----------------------------
-        # 1. Detect all matching keywords
-        # -----------------------------
-        for keyword, file in overlay_map.items():
-            if keyword in prompt:
-                overlays_to_apply.append(file)
+        folder_path = os.path.join("static", "dresses", detected_pattern)
 
-        if not overlays_to_apply:
-            return jsonify({
-                "error": "No valid design elements found in prompt"
-            }), 400
+        if not os.path.exists(folder_path):
+            return jsonify({"error": "Network Error"}), 404
 
-        # -----------------------------
-        # 2. Apply overlays sequentially
-        # -----------------------------
-        result = base_image
+        images = [
+            f for f in os.listdir(folder_path)
+            if f.lower().endswith((".png", ".jpg", ".jpeg"))
+        ]
 
-        for overlay_file in overlays_to_apply:
-            overlay_path = os.path.join("static", "overlays", overlay_file)
+        if not images:
+            return jsonify({"error": "Network Error"}), 404
 
-            overlay = Image.open(overlay_path).convert("RGBA")
-            overlay = overlay.resize(result.size)
-
-            result = Image.alpha_composite(result, overlay)
-
-        # -----------------------------
-        # 3. Save final image
-        # -----------------------------
-        filename = f"{uuid.uuid4().hex}.png"
-        save_path = os.path.join("static", "result", filename)
-
-        os.makedirs("static/result", exist_ok=True)
-        result.save(save_path)
+        selected = random.choice(images)
 
         return jsonify({
-            "image_url": url_for("static", filename=f"result/{filename}", _external=True),
-            "applied_effects": overlays_to_apply
+            "image_url": url_for(
+                "static",
+                filename=f"dresses/{detected_pattern}/{selected}",
+                _external=True
+            ),
+            "pattern_detected": detected_pattern
         })
 
     except Exception as e:
@@ -163,21 +123,89 @@ def generate_image_to_image():
 
 
 # ==========================
-# SKETCH → IMAGE (OPTIONAL PLACEHOLDER)
+# SKETCH → IMAGE (DISABLED)
 # ==========================
 
 @image_generation_bp.route("/generate_sketch_to_image", methods=["POST"])
 def generate_sketch_to_image():
     try:
         uploaded_sketch = request.files.get("sketch")
-        prompt = request.form.get("prompt", "").strip()
+        prompt = request.form.get("prompt", "").lower().strip()
 
         if not uploaded_sketch or not prompt:
-            return jsonify({"error": "Sketch and prompt required"}), 400
+            return jsonify({
+                "error": "Sketch and prompt required"
+            }), 400
 
+        # -------------------------
+        # 1. Detect color from prompt
+        # -------------------------
+        colors = [
+            "red",
+            "blue",
+            "black",
+            "white",
+            "green",
+            "grey",
+            "pink",
+            "purple"
+        ]
+
+        detected_color = None
+
+        for color in colors:
+            if color in prompt:
+                detected_color = color
+                break
+
+        if not detected_color:
+            return jsonify({
+                "error": "Please specify a color in the prompt"
+            }), 400
+
+        # -------------------------
+        # 2. Find corresponding image
+        # -------------------------
+        image_filename = f"{detected_color}.png"
+
+        image_path = os.path.join(
+            "static",
+            "dresses",
+            "sketches",
+            image_filename
+        )
+
+        print("Checking:", image_path)
+
+        if not os.path.exists(image_path):
+            return jsonify({
+                "error": f"Image not found for color: {detected_color}"
+            }), 404
+
+        # -------------------------
+        # 3. Build image URL
+        # -------------------------
+        image_url = url_for(
+            "static",
+            filename=f"dresses/sketches/{image_filename}",
+            _external=True
+        )
+
+        print("Detected Color:", detected_color)
+        print("Image URL:", image_url)
+
+        # -------------------------
+        # 4. Return response
+        # -------------------------
         return jsonify({
-            "error": "Sketch mode disabled in local template system."
-        }), 200
+            "image_url": image_url,
+            "mode": "local_sketch_template",
+            "color_detected": detected_color,
+            "sketch_used": image_filename
+        })
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        print("Sketch-to-Image Error:", e)
+        return jsonify({
+            "error": str(e)
+        }), 500
